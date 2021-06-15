@@ -1,0 +1,7 @@
+{'kind': 'youtube#searchResult', 'etag': 'j-J_yNx1whRb6KTzEDb6Tcb_9Vg', 'id': {'kind': 'youtube#video', 'videoId': 'q4FcUBNGnxY'},
+'snippet': {'publishedAt': '2020-07-20T21:20:44Z', 'channelId': 'UCmLxe9Jy_N1v5yDNIDU0UCA', 'title': 'BLACK KRAY AKA SICKBOYRARI ** SEND U A DOVE ** OFFICIAL VIDEO', 'description': 'SHOT/EDIT @PETROPESO PROD @TRAPPHONES @KRAY2SICK SEND U A DOVE #GOTHMONEY ☆G2K SICKOGANG ☆ #FREESHINE ...', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/q4FcUBNGnxY/default.jpg', 'width': 120, 'height': 90
+ 'medium': {'url': 'https://i.ytimg.com/vi/q4FcUBNGnxY/mqdefault.jpg', 'width': 320, 'height': 180}, 'high': {'url': 'https://i.ytimg.com/vi/q4FcUBNGnxY/hqdefault.jpg', 'width': 480, 'height': 360}},
+ 'channelTitle': 'BLACK KRAY', 'liveBroadcastContent': 'none', 'publishTime': '2020-07-20T21:20:44Z'}}
+
+
+  print(response['items'][0])

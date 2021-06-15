@@ -2,6 +2,7 @@ import discord, urllib.request, json
 from discord.ext import commands
 from info import token, omdbKey, reddit
 from random import randint
+from youtube import ytSearch
 
 bot = commands.Bot(command_prefix = '.')
 emb = discord.Embed()
@@ -17,8 +18,13 @@ def main():
     get_art()
     bot.run(token)
 
+
+
+
 def get_art():
     global artCount, analogCount
+    match = ["comments", "gallery"]
+
     artSub = reddit.subreddit("ArtPorn")
     new_artSub = artSub.new(limit=100)
     print("Getting from " + artSub.display_name)
@@ -28,13 +34,22 @@ def get_art():
     print("Getting from " + analogSub.display_name)
 
     for link in new_artSub:
-        artworks.append(link)
-        artCount = artCount + 1
+        if any(x in link.url for x in match):
+            print("Passing " + link.url)
+            pass
+        elif ".jpg" or ".png" in link.url:
+            print(link.url)
+            artworks.append(link)
+            artCount = artCount + 1
 
     for link in new_analogSub:
-        analogs.append(link)
-        analogCount = analogCount + 1
-
+        if any(x in link.url for x in match):
+            print("Passing " + link.url)
+            pass
+        elif ".jpg" or ".png" in link.url:
+            print(link.url)
+            analogs.append(link)
+            analogCount = analogCount + 1
 
 ''' --------------------Bot commands -------------------------'''
 
@@ -95,14 +110,19 @@ async def movie(ctx, *, arg):
             await(ctx.send("No movie found, try again"))
 
 @bot.command()
+async def yt(ctx, *, arg):
+    msg = ytSearch(arg)
+    await ctx.send(msg)
+
+@bot.command()
 async def redditart(ctx):
     rVal = randint(0, artCount - 1)
     current = artworks[rVal]
     print("ID: " + str(rVal) + "\nUrl: " + current.url
           + "\nAuthor: " + current.author.name)
     emb.set_image(url = artworks[rVal].url)
-    await ctx.send("\nUrl: " + current.url
-          + "\nAuthor: " + current.author.name, embed=emb)
+    await ctx.send("\nName: " + current.name + "\nUrl: " + current.url
+          + "\nAuthor: " + current.author.name + "\nSubmitted on: " + str(current.created_utc), embed=emb)
 
 @bot.command()
 async def analog(ctx):
@@ -111,9 +131,13 @@ async def analog(ctx):
     print("ID: " + str(rVal) + "\nUrl: " + current.url
           + "\nAuthor: " + current.author.name)
     emb.set_image(url = analogs[rVal].url)
-    await ctx.send("\nUrl: " + current.url
-          + "\nAuthor: " + current.author.name, embed=emb)
+    await ctx.send("\nName: " + current.name + "\nUrl: " + current.url
+          + "\nAuthor: " + current.author.name + "\nSubmitted on: " + str(current.created_utc), embed=emb)
 
+
+
+# print("ID: " + str(rVal) + "\nUrl: " + current.url
+    #       + "\nAuthor: " + current.author.name)
 
 #Start the program
 main()
