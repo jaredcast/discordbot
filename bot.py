@@ -1,10 +1,13 @@
-import discord, urllib.request, json
-from discord.ext import commands
+import discord, urllib.request, json, feedparser, asyncio
+from asyncio import run
+from discord.ext import commands, tasks
 from info import token, omdbKey, reddit
 from random import randint
 from youtube import ytSearch
+import datetime
 
-bot = commands.Bot(command_prefix = '.')
+intents = discord.Intents.all()
+bot = commands.Bot(command_prefix = '.', intents=intents)
 emb = discord.Embed()
 att = discord.Attachment
 
@@ -14,12 +17,28 @@ analogCount = 0
 artworks = []  # url of artwork
 analogs = []
 
+#Channels
+MANGA_C = 1207453238388068383
+
 def main():
     get_art()
     bot.run(token)
 
+# async def check_manga():
+#     feed = feedparser.parse("https://mangasee123.com/rss/Jujutsu-Kaisen.xml")
+#     if not feed.entries:
+#         return
+    
+#     newest = feed.entries[0]
+#     title = newest.title
+#     link = newest.link
+#     time = datetime.now()
 
-
+#     channel = bot.get_channel(1207453238388068383)
+#     print(channel)
+#     if channel:
+#         print(f"Update as of {time}\nNew item: {title}\n{link}")
+#         await channel.send(f"Update as of {time}\nNew item: {title}\n{link}")
 
 def get_art():
     global artCount, analogCount
@@ -35,19 +54,19 @@ def get_art():
 
     for link in new_artSub:
         if any(x in link.url for x in match):
-            print("Passing " + link.url)
+            # print("Passing " + link.url)
             pass
         elif ".jpg" or ".png" in link.url:
-            print(link.url)
+            # print(link.url)
             artworks.append(link)
             artCount = artCount + 1
 
     for link in new_analogSub:
         if any(x in link.url for x in match):
-            print("Passing " + link.url)
+            # print("Passing " + link.url)
             pass
         elif ".jpg" or ".png" in link.url:
-            print(link.url)
+            # print(link.url)
             analogs.append(link)
             analogCount = analogCount + 1
 
@@ -55,7 +74,32 @@ def get_art():
 
 @bot.event
 async def on_ready():
-    print("Bot is ready!")
+    print(f'Logged in as {bot.user}')
+    manga.start()
+    # while True:
+    #     await manga()
+        # await asyncio.sleep(60)  # Check every 5 minutes
+
+@tasks.loop(minutes=2)
+async def manga():
+    print("Finding manga")
+    feed = feedparser.parse("https://mangasee123.com/rss/Jujutsu-Kaisen.xml")
+    if not feed.entries:
+        return
+    
+    newest = feed.entries[0]
+    title = newest.title
+    link = newest.link
+    time = datetime.datetime.now()
+
+    channel = bot.get_channel(MANGA_C)
+    if channel:
+        print(f"Update as of {time}\nNew item: {title}\n{link}")
+        await channel.send(f"Update as of {time}\nNew item: {title}\n{link}")
+
+# @bot.command()
+# async def manga(ctx):
+#     await ctx.send(check_manga())
 
 @bot.event
 async def on_member_join(member):

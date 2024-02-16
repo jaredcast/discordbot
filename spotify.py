@@ -14,7 +14,7 @@ results = sp.search(q='Bladee',  limit=20)
 for idx, track in enumerate(results['tracks']['items']):
     print(idx, track['type'])'''
 
-print(results)
+print(results['tracks'])
 '''for x in results['tracks']['items']:
     print(x['album']['name'])'''
 
@@ -22,5 +22,5 @@ print(results)
 '''for x in results['tracks']:
     print(x)''' #Dummy code for showing what we can search with
 
-for x in results['tracks']['items']: #Returns various dictionaries, the list of all objects.. This documents album object https://developer.spotify.com/documentation/web-api/reference/albums/get-album/
-    print(x['album']["album_type"])
+# for x in results['tracks']['items']: #Returns various dictionaries, the list of all objects.. This documents album object https://developer.spotify.com/documentation/web-api/reference/albums/get-album/
+#     print(x['album']["external_urls"]["spotify"])
